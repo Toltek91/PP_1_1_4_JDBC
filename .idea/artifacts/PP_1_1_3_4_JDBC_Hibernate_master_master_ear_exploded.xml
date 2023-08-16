@@ -1,0 +1,8 @@
+<component name="ArtifactManager">
+  <artifact type="exploded-ear" name="PP_1_1_3-4_JDBC_Hibernate-master-master:ear exploded">
+    <output-path>$PROJECT_DIR$/out/artifacts/PP_1_1_3_4_JDBC_Hibernate_master_master_ear_exploded</output-path>
+    <root id="root">
+      <element id="javaee-facet-resources" facet="PP_1_1_3-4_JDBC_Hibernate-master-master/javaeeApplication/javaEEApplication" />
+    </root>
+  </artifact>
+</component>
