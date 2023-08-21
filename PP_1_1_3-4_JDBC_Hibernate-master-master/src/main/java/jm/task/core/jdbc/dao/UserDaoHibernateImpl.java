@@ -4,12 +4,10 @@ import jm.task.core.jdbc.model.User;
 import jm.task.core.jdbc.util.Util;
 import org.hibernate.HibernateException;
 import org.hibernate.Session;
-import org.hibernate.SessionFactory;
 import org.hibernate.Transaction;
 import org.hibernate.query.Query;
 
 import java.util.ArrayList;
-import java.util.Iterator;
 import java.util.List;
 
 public class UserDaoHibernateImpl implements UserDao {
@@ -25,7 +23,7 @@ public class UserDaoHibernateImpl implements UserDao {
             String sql = "CREATE TABLE IF NOT EXISTS users " +
                     "(id INT NOT NULL AUTO_INCREMENT PRIMARY KEY, " +
                     "name VARCHAR(50) NOT NULL, lastName VARCHAR(50) NOT NULL, " +
-                    "age TINYINT(2) NOT NULL)";
+                    "age TINYINT NOT NULL)";
 
             Query query = session.createSQLQuery(sql).addEntity(User.class);
             query.executeUpdate();
@@ -76,8 +74,12 @@ public class UserDaoHibernateImpl implements UserDao {
         try (Session session = Util.getSession()) {
             transaction = session.beginTransaction();
             User user = session.get(User.class, id);
-            session.delete(user);
-            transaction.commit();
+            if (user == null) {
+                System.out.println("User с данным id не существует");
+            } else {
+                session.delete(user);
+                transaction.commit();
+            }
         } catch (HibernateException e) {
             if (transaction != null) {
                 transaction.rollback();

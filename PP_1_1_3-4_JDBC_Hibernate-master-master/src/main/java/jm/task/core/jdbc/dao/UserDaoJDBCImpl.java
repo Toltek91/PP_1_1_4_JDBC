@@ -9,24 +9,23 @@ import java.util.List;
 
 
 public class UserDaoJDBCImpl implements UserDao {
-   private static final Connection connection = Util.getConnection();
-
+    private static final Connection connection = Util.getConnection();
 
 
     public UserDaoJDBCImpl() {
 
     }
 
-    public void createUsersTable()  {
-        try (Statement statement = connection.createStatement()){
+    public void createUsersTable() {
+        try (Statement statement = connection.createStatement()) {
             statement.executeUpdate("CREATE TABLE IF NOT EXISTS users" + "(id BIGINT PRIMARY KEY AUTO_INCREMENT, name VARCHAR(20), lastname VARCHAR(20), age INT(2))");
         } catch (SQLException e) {
             e.printStackTrace();
         }
     }
 
-    public void dropUsersTable()  {
-        try (Statement statement = connection.createStatement()){
+    public void dropUsersTable() {
+        try (Statement statement = connection.createStatement()) {
             statement.executeUpdate("DROP TABLE IF EXISTS users");
         } catch (SQLException e) {
             e.printStackTrace();
@@ -44,14 +43,22 @@ public class UserDaoJDBCImpl implements UserDao {
         }
     }
 
-    public void removeUserById(long id)  {
-        try (PreparedStatement pstm = connection.prepareStatement("DELETE FROM users WHERE id = ?")) {
-            pstm.setLong(1, id);
-            pstm.executeUpdate();
-        } catch (SQLException e) {
-            e.printStackTrace();
+    public void removeUserById(long id) throws SQLException {
+        Statement statement = connection.createStatement();
+        long userCount = 0;
+        ResultSet resultSet = statement.executeQuery("SELECT id from users");
+        while (resultSet.next()) {
+            userCount = resultSet.getLong(1);
         }
-
+        statement.close();
+        if (id <= userCount) {
+            try (PreparedStatement pstm = connection.prepareStatement("DELETE FROM users WHERE id = ?")) {
+                pstm.setLong(1, id);
+                pstm.executeUpdate();
+            }
+        } else {
+            System.out.println("User с данным id не существует");
+        }
     }
 
     public List<User> getAllUsers() {
