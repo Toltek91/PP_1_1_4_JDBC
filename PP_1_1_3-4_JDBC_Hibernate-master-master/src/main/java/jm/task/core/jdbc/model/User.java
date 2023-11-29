@@ -25,23 +25,20 @@ public class User {
         this.age = age;
     }
 
-    public Long getId() {
-        return this.id;
-    }
 
     public void setId(Long id) {
         this.id = id;
     }
 
-    public String getName(String name) {
+    public String getName() {
         return this.name;
     }
 
-    public String getLastName(String lastname) {
+    public String getLastName() {
         return lastName;
     }
 
-    public Byte getAge(byte age) {
+    public Byte getAge() {
         return this.age;
     }
 
