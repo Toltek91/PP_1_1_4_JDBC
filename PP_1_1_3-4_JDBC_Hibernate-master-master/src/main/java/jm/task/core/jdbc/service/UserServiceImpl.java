@@ -9,13 +9,13 @@ import java.util.List;
 
 public class UserServiceImpl implements UserService {
 
-    UserDao UserDaoJDBCImpl= new UserDaoJDBCImpl();
+    UserDao UserDaoHibernate = new UserDaoHibernateImpl();
 
 
     @Override
     public void createUsersTable() {
         try {
-            UserDaoJDBCImpl.createUsersTable();
+            UserDaoHibernate.createUsersTable();
         } catch (SQLException e) {
             throw new RuntimeException(e);
         }
@@ -24,7 +24,7 @@ public class UserServiceImpl implements UserService {
     @Override
     public void dropUsersTable() {
         try {
-            UserDaoJDBCImpl.dropUsersTable();
+            UserDaoHibernate.dropUsersTable();
         } catch (SQLException e) {
             throw new RuntimeException(e);
         }
@@ -33,7 +33,7 @@ public class UserServiceImpl implements UserService {
     @Override
     public void saveUser(String name, String lastName, byte age)  {
         try {
-            UserDaoJDBCImpl.saveUser(name, lastName, age);
+            UserDaoHibernate.saveUser(name, lastName, age);
         } catch (SQLException e) {
             throw new RuntimeException(e);
         }
@@ -42,7 +42,7 @@ public class UserServiceImpl implements UserService {
     @Override
     public void removeUserById(long id)  {
         try {
-            UserDaoJDBCImpl.removeUserById(id);
+            UserDaoHibernate.removeUserById(id);
         } catch (SQLException e) {
             throw new RuntimeException(e);
         }
@@ -52,7 +52,7 @@ public class UserServiceImpl implements UserService {
     public List<User> getAllUsers()  {
         List<User> users;
         try {
-            users = UserDaoJDBCImpl.getAllUsers();
+            users = UserDaoHibernate.getAllUsers();
         } catch (SQLException e) {
             throw new RuntimeException(e);
         }
@@ -64,7 +64,7 @@ public class UserServiceImpl implements UserService {
     @Override
     public void cleanUsersTable()  {
         try {
-            UserDaoJDBCImpl.cleanUsersTable();
+            UserDaoHibernate.cleanUsersTable();
         } catch (SQLException e) {
             throw new RuntimeException(e);
         }
