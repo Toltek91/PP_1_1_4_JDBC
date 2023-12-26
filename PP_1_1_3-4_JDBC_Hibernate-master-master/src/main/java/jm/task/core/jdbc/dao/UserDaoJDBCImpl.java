@@ -16,6 +16,7 @@ public class UserDaoJDBCImpl implements UserDao {
 
     }
 
+    @Override
     public void createUsersTable() {
         try (Statement statement = connection.createStatement()) {
             statement.executeUpdate("CREATE TABLE IF NOT EXISTS users" + "(id BIGINT PRIMARY KEY AUTO_INCREMENT, name VARCHAR(20), lastname VARCHAR(20), age INT(2))");
@@ -24,6 +25,7 @@ public class UserDaoJDBCImpl implements UserDao {
         }
     }
 
+    @Override
     public void dropUsersTable() {
         try (Statement statement = connection.createStatement()) {
             statement.executeUpdate("DROP TABLE IF EXISTS users");
@@ -32,35 +34,35 @@ public class UserDaoJDBCImpl implements UserDao {
         }
     }
 
+    @Override
     public void saveUser(String name, String lastName, byte age) {
-        try (PreparedStatement pstm = connection.prepareStatement("INSERT INTO users ( name, lastname, age) VALUES (?,?,?)")) {
-            pstm.setString(1, name);
-            pstm.setString(2, lastName);
-            pstm.setByte(3, age);
-            pstm.executeUpdate();
+        try (PreparedStatement preparedStat = connection.prepareStatement("INSERT INTO users ( name, lastname, age) VALUES (?,?,?)")) {
+            preparedStat.setString(1, name);
+            preparedStat.setString(2, lastName);
+            preparedStat.setByte(3, age);
+            preparedStat.executeUpdate();
         } catch (SQLException s) {
             s.printStackTrace();
         }
     }
 
-    public void removeUserById(long id) throws SQLException {
-        Statement statement = connection.createStatement();
-        long userCount = 0;
-        ResultSet resultSet = statement.executeQuery("SELECT id from users");
-        while (resultSet.next()) {
-            userCount = resultSet.getLong(1);
-        }
-        statement.close();
-        if (id <= userCount) {
-            try (PreparedStatement pstm = connection.prepareStatement("DELETE FROM users WHERE id = ?")) {
-                pstm.setLong(1, id);
-                pstm.executeUpdate();
+    @Override
+    public void removeUserById(long id) {
+        try (PreparedStatement preparedStat = connection.prepareStatement("DELETE FROM users WHERE id = ?")) {
+            preparedStat.setLong(1, id);
+            int hasResult = preparedStat.executeUpdate();
+            if (hasResult == 1) {
+                System.out.println("Пользователь с id " + id + " удален из базы");
+            } else {
+                System.out.println("Пользователь с id " + id + " не найден в базе");
             }
-        } else {
-            System.out.println("User с данным id не существует");
+        } catch (SQLException sqlEx) {
+            throw new RuntimeException("Error removing user with ID: " + id, sqlEx);
         }
+
     }
 
+    @Override
     public List<User> getAllUsers() {
         List<User> userList = new ArrayList<>();
         try (Statement statement = connection.createStatement()) {
@@ -80,6 +82,7 @@ public class UserDaoJDBCImpl implements UserDao {
 
     }
 
+    @Override
     public void cleanUsersTable() {
         try (Statement statement = connection.createStatement()) {
             statement.executeUpdate("TRUNCATE TABLE users");
